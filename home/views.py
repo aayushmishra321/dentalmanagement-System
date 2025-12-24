@@ -647,3 +647,35 @@ def userlogout(request):
     messages.success(request,"Log out successfully")
     
     return redirect("home")
+
+# -------------------------------------------user history---------------------------------------------------
+def history(request, uemailid):
+    if check_login==False:
+        return redirect('home')
+    
+    # Get appointment history for the user
+    history_data = appointmenthistory.objects.filter(useremail=uemailid).order_by('-appdate')
+    
+    context = {
+        'email': uemailid,
+        'history_data': history_data,
+        'no_history': not history_data.exists()
+    }
+    
+    return render(request, "userhistory.html", context)
+
+# -------------------------------------------user detail---------------------------------------------------
+def userdetail(request, uemailid):
+    if check_login==False:
+        return redirect('home')
+    
+    try:
+        user_data = UserDetail.objects.get(email=uemailid)
+        context = {
+            'email': uemailid,
+            'user_data': user_data
+        }
+        return render(request, "userdetail.html", context)
+    except UserDetail.DoesNotExist:
+        messages.error(request, "User not found")
+        return redirect('home')
