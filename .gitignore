@@ -9,7 +9,9 @@ db.sqlite3-journal
 media/
 
 # Environment variables
-.env
+# .env - Commented out for Render deployment
+# Uncomment the line below if you want to exclude .env from git
+# .env
 
 # Static files
 staticfiles/
