@@ -1,194 +1,305 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Contact Us Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Contact Us - DENTIST</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <link rel="stylesheet" href="/static/cssfiles/contactusstyle.css">
-        <link rel="stylesheet" href="/static/cssfiles/aboutusstyle.css">
-        
     </head>
     
     <body>
-        <!-- header -->
-        <header>
-
-            <div class="navbar" >
-
-                <div class="pro_title border">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <a href="{% if check %}{% url 'userhp' uemail %}{% else %}{% url 'home' %}{% endif %}" class="pro_title">
                     <i class="fa-solid fa-tooth"></i>
                     DENTIST
-                </div>
+                </a>
 
-                
-                <div class="user-part">
-                    <div class="contact-us border">
-                        <a href="{% url 'contact'%}">Contact Us</a>
-    
-                    </div>
-                    <div class="about-us border">
-                        <a href="{% url 'about'%}">About Us</a>
-    
-                    </div>
-                    
-                    {%if check == False%}
-                    <div class="about-us border">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-item">
+                        <a href="{% if check %}{% url 'userhp' uemail %}{% else %}{% url 'home' %}{% endif %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'about' %}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'contact' %}" class="active">Contact Us</a>
+                    </li>
+                    {% if not check %}
+                    <li class="nav-item">
                         <a href="{% url 'fordoctor' %}">For Doctor</a>
-    
-                    </div>
-                    <div class="user-login">
-                        <p>
-                            <a class="border" href="{% url 'login' %}">Login</a> or <a class="border" href="{% url 'register' %}">Register</a>
-                        </p>
-                    </div>
-                    {%endif%}
-                    
-                    
-                </div>
-            </div>
-                
+                    </li>
+                    {% endif %}
+                </ul>
 
-        </header>
+                {% if not check %}
+                <div class="user-auth" id="userAuth">
+                    <a href="{% url 'login' %}" class="auth-btn">Login</a>
+                    <a href="{% url 'register' %}" class="auth-btn">Register</a>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- Alert Messages -->
         {% if messages %}
-        {%for message in messages%}
-        <div class="alert" >
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-            <strong>{{ message}}</strong> 
+        <div class="alerts-container">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} fade-in">
+                <span class="alert-message">{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+            {% endfor %}
         </div>
-        
-        {% endfor%}
-        {%endif%}
-        <!-- section -->
-        <section id="contactus-one">
-            <div class="msg-five">
-                <p class="title-one">Contact Us</p>
-                <p>Have questions ,suggestions or anything else? Let us know and we'll get back to you.</p>
-            </div>
-            <div class="contact-detail">
-                <div class="details">
-                    <div class="email">
-                        <div class="e-icon">
-                            <i class="fa-regular fa-envelope"></i>
-                            <p>E-MAIL </p>
-                        </div>
-                        <p class="e-detail">dentist@gmail.com</p>
-                    </div>
-                    <div class="email">
-                        <div class="e-icon">
-                            <i class="fa-solid fa-phone"></i>
-                            <p>CALL </p>
-                        </div>
-                        <p class="e-detail">91-0000000000</p>
-                    </div>
+        {% endif %}
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content text-center">
+                    <div class="hero-subtitle fade-in">Get In Touch</div>
+                    <h1 class="hero-title slide-up">Contact Us</h1>
+                    <p class="hero-description slide-up">
+                        Have questions, suggestions or anything else? Let us know and we'll get back to you.
+                    </p>
                 </div>
-                <form class="form-one" action="{% url 'contact'%}" method="post">
-                {% csrf_token %}
-                    <div class="name">
-                        <label for="username">
-                            <p>
-                                Name
-                                <sup style="color:red;">*</sup>
-                            </p>
-                        </label>
-                        <input type="text" id="username" name="username" placeholder="Enter your full name" class="input-one">
-                    </div>
-                    <div class="name">
-                        <label for="useremail">
-                            <p>
-                                Email
-                                <sup style="color:red;">*</sup>
-                            </p>
-                        </label>
-                        <input type="email" id="useremail" name="useremail" placeholder="Enter your email" class="input-one">
-                    </div>
-                    <div class="name">
-                        <label for="usercontact">
-                            <p>
-                                Contact
-                                <sup style="color:red;">*</sup>
-                            </p>
-                        </label>
-                        <input type="number" id="usercontact" name="usercontact" placeholder="Enter your phone no." class="input-one">
-                    </div>
-                    <div class="name">
-                        <label for="usermessage">
-                            <p>
-                                Message
-                                <sup style="color:red;">*</sup>
-                            </p>
-                        </label>
-                        <textarea id="usermessage" name="usermessage" placeholder="Write Message" class="input-two"></textarea>
-                    </div>
-                    
-                    <input type="submit" value="Submit" class="btn" >
-                        
-                    
-                </form>
             </div>
-
         </section>
 
-        
-        
-        <!-- footer -->
-        <footer>
-            <div class="panel1 ">
-                <ul class="ul1">
-                    <p>Get to know Us</p>
-                    {%if check == False%}
-                    <a href="{% url 'home' %}">Home</a>
-                    {%endif%}
-                    {%if check == True%}
-                    <a href="{% url 'userhp' uemail %}">Home</a>
-                    {%endif%}
-                    
-                    <a href="{% url 'about' %}">About Us</a>
-                    <a href="{% url 'contact' %}">Contact Us</a>
-                    
-                    
-                </ul>
-                {% if check == False %}
-                <ul class="ul1">
-                    <p>For Patients</p>
-                    <a href="{% url 'login' %}">Find Doctors</a>
-                    <a href="{% url 'login' %}">Book appointment</a>
-                </ul>
-                {%endif%}
-                {%if check == True %}
-                <ul class="ul1">
-                    <p>For Patients</p>
-                    <a href="{% url 'appointment' uemail %}">Find Doctors</a>
-                    <a href="{% url 'appointment' uemail %}">Book appointment</a>
-                </ul>
-                {%endif%}
-
-                <ul>
-                    <p>Social</p>
-                    <div class="social">
-                        <i class="fa-brands fa-x-twitter"></i>
-                        <a href="#">Twitter</a>
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-content">
+                    <!-- Contact Information -->
+                    <div class="contact-info">
+                        <h2 class="contact-info-title">Get in Touch</h2>
+                        <p class="contact-info-subtitle">We're here to help and answer any question you might have.</p>
+                        
+                        <div class="contact-details">
+                            <div class="contact-item bounce-in">
+                                <div class="contact-icon">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </div>
+                                <div class="contact-text">
+                                    <h3>Email</h3>
+                                    <p>dentist@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item bounce-in">
+                                <div class="contact-icon">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div class="contact-text">
+                                    <h3>Call</h3>
+                                    <p>91-0000000000</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item bounce-in">
+                                <div class="contact-icon">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div class="contact-text">
+                                    <h3>Address</h3>
+                                    <p>123 Dental Street<br>Healthcare City, HC 12345</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="social">
-                        <i class="fa-brands fa-facebook"></i>
-                        <a href="#">Facebook</a>
-                    </div>
-                    <div class="social">
-                        <i class="fa-brands fa-instagram"></i>
-                        <a href="#">Instagram</a>
-                    </div>
-                </ul>
 
-
-            </div>
-            <div class="panel2">
-                <div class="pro_title border">
-                    <i class="fa-solid fa-tooth"></i>
-                    DENTIST
+                    <!-- Contact Form -->
+                    <div class="contact-form-container">
+                        <form class="contact-form scale-in" action="{% url 'contact' %}" method="post">
+                            {% csrf_token %}
+                            <h2 class="form-title">Send us a Message</h2>
+                            
+                            <div class="form-group">
+                                <label for="username" class="form-label">
+                                    Name <span class="required">*</span>
+                                </label>
+                                <input type="text" id="username" name="username" placeholder="Enter your full name" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="useremail" class="form-label">
+                                    Email <span class="required">*</span>
+                                </label>
+                                <input type="email" id="useremail" name="useremail" placeholder="Enter your email" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="usercontact" class="form-label">
+                                    Contact <span class="required">*</span>
+                                </label>
+                                <input type="tel" id="usercontact" name="usercontact" placeholder="Enter your phone number" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="usermessage" class="form-label">
+                                    Message <span class="required">*</span>
+                                </label>
+                                <textarea id="usermessage" name="usermessage" placeholder="Write your message here..." class="form-textarea" rows="6" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="panel3">
-                <p>DENTIST © 2024, All Rights Reserved </p>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Get to know Us</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% if check %}{% url 'userhp' uemail %}{% else %}{% url 'home' %}{% endif %}">Home</a></li>
+                            <li><a href="{% url 'about' %}">About Us</a></li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>For Patients</h3>
+                        <ul class="footer-links">
+                            {% if check %}
+                            <li><a href="{% url 'appointment' uemail %}">Find Doctors</a></li>
+                            <li><a href="{% url 'appointment' uemail %}">Book appointment</a></li>
+                            {% else %}
+                            <li><a href="{% url 'login' %}">Find Doctors</a></li>
+                            <li><a href="{% url 'login' %}">Book appointment</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h3>Social</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-x-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span>Instagram</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <div class="footer-logo">
+                        <i class="fa-solid fa-tooth"></i>
+                        DENTIST
+                    </div>
+                    <p>DENTIST © 2024, All Rights Reserved</p>
+                </div>
             </div>
         </footer>
+
+        <!-- JavaScript -->
+        <script>
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const navLinks = document.getElementById('navLinks');
+            const userAuth = document.getElementById('userAuth');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                if (userAuth) {
+                    userAuth.classList.toggle('active');
+                }
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Form validation and enhancement
+            const form = document.querySelector('.contact-form');
+            const inputs = form.querySelectorAll('.form-input, .form-textarea');
+
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+
+                // Add focused class if input has value on page load
+                if (input.value !== '') {
+                    input.parentElement.classList.add('focused');
+                }
+            });
+
+            // Form submission enhancement
+            form.addEventListener('submit', function(e) {
+                const submitBtn = form.querySelector('.submit-btn');
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+                submitBtn.disabled = true;
+            });
+
+            // Animation on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.contact-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = 'all 0.6s ease';
+                observer.observe(item);
+            });
+
+            // Auto-hide alerts after 5 seconds
+            document.querySelectorAll('.alert').forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+        </script>
     </body>
 </html>
