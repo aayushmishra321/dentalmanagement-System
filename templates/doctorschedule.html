@@ -1,166 +1,301 @@
 <!DOCTYPE html>
-<html >
-  <head>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Doctor Schedule - DENTIST</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="/static/cssfiles/doctorschedulestyle.css">
+    </head>
+    
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <a href="{% url 'doctors' email %}" class="pro_title">
+                    <i class="fa-solid fa-tooth"></i>
+                    DENTIST
+                </a>
 
-    <title>Doctor Schedule</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/static/cssfiles/doctorschedulestyle.css">
-    <link rel="stylesheet" href="/static/cssfiles/aboutusstyle.css">
-  </head>
-  <body>
-    <!-- header -->
-    <header>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-      <div class="navbar" >
-
-          <div class="pro_title border">
-              <i class="fa-solid fa-tooth"></i>
-              DENTIST
-          </div>
-
-          
-          <div class="user-part">
-              <div class="contact-us border">
-                  <a href="{% url 'contact'%}">Contact Us</a>
-
-              </div>
-              <div class="about-us border">
-                  <a href="{% url 'about'%}">About Us</a>
-
-              </div>
-              <div class="about-us border">
-                <a href="{%url 'userlogout'%}">Log Out</a>
-
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-item">
+                        <a href="{% url 'contact' %}">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'about' %}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'userlogout' %}">Log Out</a>
+                    </li>
+                </ul>
             </div>
-              
-              
-          </div>
-      </div>
-          
+        </nav>
 
-  </header>
-  {% if messages %}
-  {%for message in messages%}
-  <div class="alert" >
-      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-      <strong>{{ message}}</strong> 
-  </div>
-  
-  {% endfor%}
-  {%endif%}
-
-    <div class="container">
-      <div class="header">
-        <h1>Schedule</h1>
-      </div>
-      
-      <div>
-        {%if noappointment == True%}
-        <table class="schedule">
-          
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Patient Name</th>
-              <th>Prescription</th>
-              <th>Cancel appointment</th>
-            </tr>
-          </thead>
-          {%for n in userdetail%}
-          <tbody>
-            <tr>
-              <td>{{n.apptime}}</td>
-              <td>{{n.username}}</td>
-              <td>
-                
-                <form method="post" action="{% url 'doctors' email %}">
-                {% csrf_token %}
-                      <input type="hidden" name="form_type" value="prescription">
-                      <input type="hidden" name="useremail" value="{{n.useremail}}">
-                      <input type="hidden" name="date" value="{{n.appdate}}">
-                      <input type="hidden" name="time" value="{{n.apptime}}">
-              
-                      <p>
-                          <input type="submit" class="prescription-button" value="Prescription">
-                      </p>
-                      
-                </form>
-              </td>
-              <td class="cbtn">
-               
-               <form method="post" action="{% url 'doctors' email %}">
-                {% csrf_token %}
-                    <input type="hidden" name="form_type" value="email_user">
-                    <input type="hidden" name="date" value="{{n.appdate}}">
-                    <input type="hidden" name="time" value="{{n.apptime}}">
-                    
-                    <input type="hidden" name="useremail" value="{{n.useremail}}">
-                    <input type="hidden" name="doctorname" value="{{n.doctorname}}">
-                    <p>
-                      <input type="submit" class="present-button" value="Cancel">
-                    </p>
-                    
-               </form>
-              </td>
-            </tr>
-            
-          </tbody>
-          {%endfor%}
-        </table>
-        
-        {% elif noappointment == False  %}
-        <div class="head1">
-          <h1>Today No Appointment</h1>
+        <!-- Alert Messages -->
+        {% if messages %}
+        <div class="alerts-container">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} fade-in">
+                <span class="alert-message">{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+            {% endfor %}
         </div>
-        {%endif%}
+        {% endif %}
 
-      </div>
-    </div>
-    <!-- footer -->
-    <footer>
-      <div class="panel1 ">
-          <ul class="ul1">
-              <p>Get to know Us</p>
-              <a href="{% url 'home' %}">Home</a>
-              <a href="{% url 'about' %}">About Us</a>
-              <a href="{% url 'contact' %}">Contact Us</a>
-              
-              
-          </ul>
-          <ul class="ul1">
-              <p>For Patients</p>
-              <a href="{% url 'login' %}">Find Doctors</a>
-              <a href="{% url 'login' %}">Book appointment</a>
-          </ul>
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1 class="page-title">Today's Schedule</h1>
+                        <p class="page-subtitle">Manage your appointments and patient consultations</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-          <ul>
-              <p>Social</p>
-              <div class="social">
-                  <i class="fa-brands fa-x-twitter"></i>
-                  <a href="#">Twitter</a>
-              </div>
-              <div class="social">
-                  <i class="fa-brands fa-facebook"></i>
-                  <a href="#">Facebook</a>
-              </div>
-              <div class="social">
-                  <i class="fa-brands fa-instagram"></i>
-                  <a href="#">Instagram</a>
-              </div>
-          </ul>
+        <!-- Schedule Content -->
+        <section class="schedule-section">
+            <div class="container">
+                {% if noappointment == True %}
+                <div class="schedule-content">
+                    <div class="schedule-table-container">
+                        <div class="table-responsive">
+                            <table class="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th class="table-time">
+                                            <i class="fa-solid fa-clock"></i>
+                                            Time
+                                        </th>
+                                        <th class="table-patient">
+                                            <i class="fa-solid fa-user"></i>
+                                            Patient Name
+                                        </th>
+                                        <th class="table-prescription">
+                                            <i class="fa-solid fa-prescription-bottle-medical"></i>
+                                            Prescription
+                                        </th>
+                                        <th class="table-actions">
+                                            <i class="fa-solid fa-cog"></i>
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in userdetail %}
+                                    <tr class="schedule-row fade-in">
+                                        <td class="time-cell">
+                                            <div class="time-content">
+                                                <div class="time-badge">
+                                                    <i class="fa-solid fa-clock"></i>
+                                                    <span>{{ appointment.apptime }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="patient-cell">
+                                            <div class="patient-content">
+                                                <div class="patient-avatar">
+                                                    <i class="fa-solid fa-user"></i>
+                                                </div>
+                                                <div class="patient-info">
+                                                    <span class="patient-name">{{ appointment.username }}</span>
+                                                    <span class="patient-email">{{ appointment.useremail }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="prescription-cell">
+                                            <form method="post" action="{% url 'doctors' email %}" class="prescription-form">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="form_type" value="prescription">
+                                                <input type="hidden" name="useremail" value="{{ appointment.useremail }}">
+                                                <input type="hidden" name="date" value="{{ appointment.appdate }}">
+                                                <input type="hidden" name="time" value="{{ appointment.apptime }}">
+                                                <button type="submit" class="prescription-btn">
+                                                    <i class="fa-solid fa-file-medical"></i>
+                                                    Prescription
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td class="actions-cell">
+                                            <form method="post" action="{% url 'doctors' email %}" class="cancel-form">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="form_type" value="email_user">
+                                                <input type="hidden" name="date" value="{{ appointment.appdate }}">
+                                                <input type="hidden" name="time" value="{{ appointment.apptime }}">
+                                                <input type="hidden" name="useremail" value="{{ appointment.useremail }}">
+                                                <input type="hidden" name="doctorname" value="{{ appointment.doctorname }}">
+                                                <button type="submit" class="cancel-btn">
+                                                    <i class="fa-solid fa-times"></i>
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% elif noappointment == False %}
+                <div class="no-appointments">
+                    <div class="no-appointments-icon">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                    </div>
+                    <h3>No Appointments Today</h3>
+                    <p>You have no scheduled appointments for today. Enjoy your free time!</p>
+                    <div class="schedule-actions">
+                        <a href="{% url 'contact' %}" class="contact-btn">
+                            <i class="fa-solid fa-phone"></i>
+                            Contact Support
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Get to know Us</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'home' %}">Home</a></li>
+                            <li><a href="{% url 'about' %}">About Us</a></li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>For Patients</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'login' %}">Find Doctors</a></li>
+                            <li><a href="{% url 'login' %}">Book appointment</a></li>
+                        </ul>
+                    </div>
 
+                    <div class="footer-section">
+                        <h3>Social</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-x-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span>Instagram</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-      </div>
-      <div class="panel2">
-          <div class="pro_title border">
-              <i class="fa-solid fa-tooth"></i>
-              DENTIST
-          </div>
-      </div>
+                <div class="footer-bottom">
+                    <div class="footer-logo">
+                        <i class="fa-solid fa-tooth"></i>
+                        DENTIST
+                    </div>
+                    <p>DENTIST © 2024, All Rights Reserved</p>
+                </div>
+            </div>
+        </footer>
 
-      <div class="panel3">
-          <p>DENTIST © 2024, All Rights Reserved </p>
-      </div>
-   </footer>
-  </body>
+        <!-- JavaScript -->
+        <script>
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const navLinks = document.getElementById('navLinks');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Form submission enhancement
+            document.querySelectorAll('.prescription-form, .cancel-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+                    submitBtn.disabled = true;
+                    
+                    // Re-enable after 3 seconds in case of issues
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                });
+            });
+
+            // Animation on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe table rows for animation
+            document.querySelectorAll('.schedule-row').forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(30px)';
+                row.style.transition = `all 0.6s ease ${index * 0.1}s`;
+                observer.observe(row);
+            });
+
+            // Auto-hide alerts after 5 seconds
+            document.querySelectorAll('.alert').forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+
+            // Table row hover effects
+            document.querySelectorAll('.schedule-row').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        </script>
+    </body>
 </html>

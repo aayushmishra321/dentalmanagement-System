@@ -1,139 +1,270 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>User Details</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Appointment History - DENTIST</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <link rel="stylesheet" href="/static/cssfiles/aboutusstyle.css">
         <link rel="stylesheet" href="/static/cssfiles/userhistorystyle.css">
-        
     </head>
     
     <body>
-        <!-- header -->
-        <header>
-
-            <div class="navbar" >
-
-                <div class="pro_title border">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <a href="{% url 'userhp' email %}" class="pro_title">
                     <i class="fa-solid fa-tooth"></i>
                     DENTIST
-                </div>
+                </a>
 
-                
-                <div class="user-part">
-                    <div class="contact-us border">
-                        <a href="{% url 'contact' %}">Contact Us</a>
-    
-                    </div>
-                    <div class="about-us border">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-item">
+                        <a href="{% url 'userhp' email %}">Home</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{% url 'about' %}">About Us</a>
-    
-                    </div>
-    
-                    <div class="user">
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'contact' %}">Contact Us</a>
+                    </li>
+                </ul>
+
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuToggle">
                         <i class="fa-solid fa-user"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="{% url 'userdetail' email %}"><i class="fa-solid fa-user-circle"></i> Profile</a>
+                        <a href="{% url 'applist' email %}"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
+                        <a href="{% url 'history' email %}"><i class="fa-solid fa-history"></i> History</a>
+                        <a href="{% url 'userlogout' %}"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
             </div>
-                
+        </nav> 
 
-        </header>
-        <!-- toggle menu -->
-        <input type="checkbox" id="opensidebar">
-        <label for="opensidebar" class="sidebarIconToggle"></label>
-        <div id="sidebarmenu">
-            <ul class="menu">
-                <li><a href="{% url 'userdetail' email %}">Details</a></li>
-                <li><a href="{% url 'applist' email %}">Appointments</a></li>
-                <li><a href="{% url 'history' email%}">History</a></li>
-                <li><a href="{%url 'userlogout'%}">Log Out</a></li>
-            </ul>
-        </div> 
-
-        <!-- users appointments history-->
-        <div class="user-history" id="appointment-history">
-            <div class="detail-title">
-                <h1>Appointment History</h1>
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-history"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1 class="page-title">Appointment History</h1>
+                        <p class="page-subtitle">View your past dental appointments and treatments</p>
+                    </div>
+                </div>
             </div>
-            {%if noappointment == True%}
-            <table class="history-table">
+        </section>
 
-                <tr>
-                    
-                    <th class="table-date">Date</th>
-                    <th class="table-drname">Doctor Name</th>
-                    <th class="table-prescribe">Prescription</th>
-                </tr>
-                {%for n in userdetail%}
-                <tr>
-                    
-                    <td class="display-date">
-                        <p>{{n.appdate}}</p>
-                    </td>
-                    <td>
-                        <p>{{n.doctorname}}</p>
-                    </td>
-                    <td>
-                        <p>{{n.prescription}}</p>
-                    </td>
-                </tr>
-                {%endfor%}
-               
-            </table>
-            {% elif noappointment == False  %}
-            <div class="detail-title1">
-                <h1>No Appointment history</h1>
+        <!-- History Content -->
+        <section class="history-section">
+            <div class="container">
+                {% if noappointment == True %}
+                <div class="history-content">
+                    <div class="history-table-container">
+                        <div class="table-responsive">
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th class="table-date">
+                                            <i class="fa-solid fa-calendar"></i>
+                                            Date
+                                        </th>
+                                        <th class="table-doctor">
+                                            <i class="fa-solid fa-user-doctor"></i>
+                                            Doctor Name
+                                        </th>
+                                        <th class="table-prescription">
+                                            <i class="fa-solid fa-prescription-bottle-medical"></i>
+                                            Prescription
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in userdetail %}
+                                    <tr class="history-row fade-in">
+                                        <td class="date-cell">
+                                            <div class="date-content">
+                                                <span class="date-text">{{ appointment.appdate }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="doctor-cell">
+                                            <div class="doctor-content">
+                                                <div class="doctor-avatar">
+                                                    <i class="fa-solid fa-user-doctor"></i>
+                                                </div>
+                                                <span class="doctor-name">{{ appointment.doctorname }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="prescription-cell">
+                                            <div class="prescription-content">
+                                                {% if appointment.prescription %}
+                                                <div class="prescription-text">
+                                                    <i class="fa-solid fa-file-medical"></i>
+                                                    <span>{{ appointment.prescription }}</span>
+                                                </div>
+                                                {% else %}
+                                                <div class="no-prescription">
+                                                    <i class="fa-solid fa-clock"></i>
+                                                    <span>Pending</span>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% elif noappointment == False %}
+                <div class="no-history">
+                    <div class="no-history-icon">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                    </div>
+                    <h3>No Appointment History</h3>
+                    <p>You haven't had any appointments yet. Book your first appointment to get started!</p>
+                    <a href="{% url 'appointment' email %}" class="book-appointment-btn">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        Book Appointment
+                    </a>
+                </div>
+                {% endif %}
             </div>
-            {%endif%}
-        </div>
+        </section>
        
-        
-        
-        <!-- footer -->
-        <footer>
-            <div class="panel1 ">
-                <ul class="ul1">
-                    <p>Get to know Us</p>
-                    <a href="{% url 'userhp' email %}">Home</a>
-                    <a href="{% url 'about' %}">About Us</a>
-                    <a href="{% url 'contact' %}">Contact Us</a>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Get to know Us</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'userhp' email %}">Home</a></li>
+                            <li><a href="{% url 'about' %}">About Us</a></li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        </ul>
+                    </div>
                     
-                    
-                </ul>
-                <ul class="ul1">
-                    <p>For Patients</p>
-                    <a href="{% url 'userhp' email %}">Find Doctors</a>
-                    <a href="{% url 'userhp' email %}">Book appointment</a>
-                </ul>
-
-                <ul>
-                    <p>Social</p>
-                    <div class="social">
-                        <i class="fa-brands fa-x-twitter"></i>
-                        <a href="#">Twitter</a>
+                    <div class="footer-section">
+                        <h3>For Patients</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'appointment' email %}">Find Doctors</a></li>
+                            <li><a href="{% url 'appointment' email %}">Book appointment</a></li>
+                        </ul>
                     </div>
-                    <div class="social">
-                        <i class="fa-brands fa-facebook"></i>
-                        <a href="#">Facebook</a>
-                    </div>
-                    <div class="social">
-                        <i class="fa-brands fa-instagram"></i>
-                        <a href="#">Instagram</a>
-                    </div>
-                </ul>
 
-
-            </div>
-            <div class="panel2">
-                <div class="pro_title border">
-                    <i class="fa-solid fa-tooth"></i>
-                    DENTIST
+                    <div class="footer-section">
+                        <h3>Social</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-x-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span>Instagram</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="panel3">
-                <p>DENTIST © 2024, All Rights Reserved </p>
+                <div class="footer-bottom">
+                    <div class="footer-logo">
+                        <i class="fa-solid fa-tooth"></i>
+                        DENTIST
+                    </div>
+                    <p>DENTIST © 2024, All Rights Reserved</p>
+                </div>
             </div>
         </footer>
+
+        <!-- JavaScript -->
+        <script>
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const navLinks = document.getElementById('navLinks');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // User menu toggle
+            const userMenuToggle = document.getElementById('userMenuToggle');
+            const userDropdown = document.getElementById('userDropdown');
+
+            userMenuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
+            });
+
+            // Close user dropdown when clicking outside
+            document.addEventListener('click', function() {
+                userDropdown.classList.remove('active');
+            });
+
+            // Prevent dropdown from closing when clicking inside
+            userDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Animation on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe table rows for animation
+            document.querySelectorAll('.history-row').forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(30px)';
+                row.style.transition = `all 0.6s ease ${index * 0.1}s`;
+                observer.observe(row);
+            });
+
+            // Table row hover effects
+            document.querySelectorAll('.history-row').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        </script>
     </body>
 </html>
