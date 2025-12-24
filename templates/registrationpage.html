@@ -1,108 +1,356 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Patient Registation</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        
-        <link rel="stylesheet" href="/static/cssfiles/registrationstyle.css">
-        
-    </head>
-    
-    <body>
-        
-        <!-- user registraiont -->
-        
-        {% if messages %}
-        {%for message in messages%}
-        <div class="alert" >
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-            <strong>{{ message}}</strong> 
-        </div>
-        
-        {% endfor%}
-        {%endif%}
-        <div class="registration-page">
-            
-            <form method="post" action="{% url 'register' %}" class="detail-form">
-            {% csrf_token %}
-                <div class="detail-title">
-                    <h1>Patient Registation</h1>
-                </div>
-                <div class="details">
-                    <div class="name">
-                        <label for="uname"><p>Name:</p></label>
-                        <input type="text" id="uname" name="uname" placeholder="Enter name" class="input-one">
-                    </div>
-                    <div class="row1">
-                        <div class="name">
-                            <label for="udob"><p>Date of Birth:</p></label>
-                            
-                            <input type="date" value="dd/mm/yyyy" id="udob" name="udob" class="input-one">
-                        </div>
-                        <div class="name">
-                            
-                            <label for="ugender"><p>Gender:</p></label>
-                            <div class="gender">
-                                <p><input type="radio" id="ugender" name="ugender" value="Male" > Male</p>
-                                <p><input type="radio" id="ugender" name="ugender" value="Female" > Female</p>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <div class="row1">
-                        <div class="name">
-                            <label for="ucontact"><p>Contact:</p></label>
-                            
-                            <input type="number" id="ucontact" name="ucontact" placeholder="Enter contact number" class="input-one">
-                        </div>
-                        <div class="name">
-                            <label for="uemail"><p>Email:</p></label>
-                            
-                            <input type="email" id="uemail" name="uemail" placeholder="Enter email-id" class="input-one">
-            
-                        </div>
-                    </div>
-                    <div class="row1">
-                        <div class="name">
-                            <label for="uaddress"><p>Address:</p></label>
-                            
-                            <textarea id="uaddress"  name="uaddress" placeholder="Enter address" class="input-two"></textarea>
-                        </div>
-                        <div class="name">
-                            <label for="upincode">
-                                <p>Pincode:</p>
-                                
-                            </label>
-                            <input type="text" id="upincode"  name="upincode" placeholder="Enter pincode" class="input-one">
-                        </div>
-                    </div>
-                    <div class="row1">
-                        <div class="name">
-                            <label for="newpassword"><p>Enter password:</p></label>
-                            
-                            <input type="password" id="newpassword"  name="newpassword" placeholder="Enter password" class="input-one">
-                        </div>
-                        <div class="name">
-                            <label for="confirmpassword">
-                                <p>Confirm password:</p>
-                                
-                            </label>
-                            <input type="password" id="confirmpassword"  name="confirmpassword" placeholder="Confirm password" class="input-one">
-                        </div>
-                    </div>
-                    <div class="button">
-                    
-                        <input type="submit" value="Register" class="btn">
-                        
-                    </div>
-                    <label for="" class="sp">
-                        Already have an account? <a href="{% url 'login' %}"> Login</a>
-                    </label>
-                </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration - DENTIST</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/cssfiles/registrationstyle.css">
+    <meta name="description" content="Register as a patient to book dental appointments with trusted dentists.">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+
+    <!-- Alert Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}warning{% endif %} fade-in">
+                <span>{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Registration Page -->
+    <div class="registration-page">
+        <div class="registration-container">
+            <!-- Header -->
+            <div class="registration-header">
+                <h1 class="registration-title">
+                    <i class="fa-solid fa-tooth"></i>
+                    Patient Registration
+                </h1>
+                <p class="registration-subtitle">Join our dental care community and book appointments with trusted dentists</p>
+            </div>
+
+            <!-- Registration Form -->
+            <form method="post" action="{% url 'register' %}" class="registration-form" id="registrationForm">
+                {% csrf_token %}
                 
+                <div class="form-grid">
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="uname" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Full Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="uname" 
+                            name="uname" 
+                            placeholder="Enter your full name" 
+                            class="form-input"
+                            required
+                        >
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="uemail" class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="uemail" 
+                            name="uemail" 
+                            placeholder="Enter your email address" 
+                            class="form-input"
+                            required
+                        >
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="form-group">
+                        <label for="ucontact" class="form-label">
+                            <i class="fas fa-phone"></i>
+                            Contact Number
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="ucontact" 
+                            name="ucontact" 
+                            placeholder="Enter your contact number" 
+                            class="form-input"
+                            pattern="[0-9]{10}"
+                            required
+                        >
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="form-group">
+                        <label for="udob" class="form-label">
+                            <i class="fas fa-calendar"></i>
+                            Date of Birth
+                        </label>
+                        <input 
+                            type="date" 
+                            id="udob" 
+                            name="udob" 
+                            class="form-input"
+                            required
+                        >
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-venus-mars"></i>
+                            Gender
+                        </label>
+                        <div class="gender-group">
+                            <div class="gender-option">
+                                <input 
+                                    type="radio" 
+                                    id="male" 
+                                    name="ugender" 
+                                    value="Male" 
+                                    class="gender-radio"
+                                    required
+                                >
+                                <label for="male" class="gender-label">Male</label>
+                            </div>
+                            <div class="gender-option">
+                                <input 
+                                    type="radio" 
+                                    id="female" 
+                                    name="ugender" 
+                                    value="Female" 
+                                    class="gender-radio"
+                                    required
+                                >
+                                <label for="female" class="gender-label">Female</label>
+                            </div>
+                            <div class="gender-option">
+                                <input 
+                                    type="radio" 
+                                    id="other" 
+                                    name="ugender" 
+                                    value="Other" 
+                                    class="gender-radio"
+                                    required
+                                >
+                                <label for="other" class="gender-label">Other</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pincode -->
+                    <div class="form-group">
+                        <label for="upincode" class="form-label">
+                            <i class="fas fa-map-pin"></i>
+                            Pincode
+                        </label>
+                        <input 
+                            type="text" 
+                            id="upincode" 
+                            name="upincode" 
+                            placeholder="Enter your pincode" 
+                            class="form-input"
+                            pattern="[0-9]{6}"
+                            required
+                        >
+                    </div>
+
+                    <!-- Address -->
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="uaddress" class="form-label">
+                            <i class="fas fa-home"></i>
+                            Address
+                        </label>
+                        <textarea 
+                            id="uaddress" 
+                            name="uaddress" 
+                            placeholder="Enter your complete address" 
+                            class="form-input form-textarea"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Password Fields -->
+                    <div class="password-group">
+                        <div class="form-group">
+                            <label for="newpassword" class="form-label">
+                                <i class="fas fa-lock"></i>
+                                Password
+                            </label>
+                            <input 
+                                type="password" 
+                                id="newpassword" 
+                                name="newpassword" 
+                                placeholder="Enter your password" 
+                                class="form-input"
+                                minlength="6"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmpassword" class="form-label">
+                                <i class="fas fa-lock"></i>
+                                Confirm Password
+                            </label>
+                            <input 
+                                type="password" 
+                                id="confirmpassword" 
+                                name="confirmpassword" 
+                                placeholder="Confirm your password" 
+                                class="form-input"
+                                minlength="6"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-user-plus"></i>
+                        Register Now
+                    </button>
+                    
+                    <p class="login-link">
+                        Already have an account? 
+                        <a href="{% url 'login' %}">Login here</a>
+                    </p>
+                </div>
             </form>
         </div>
-        
-        
-    </body>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Form validation and enhancement
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const passwordField = document.getElementById('newpassword');
+        const confirmPasswordField = document.getElementById('confirmpassword');
+
+        // Real-time password validation
+        function validatePasswords() {
+            const password = passwordField.value;
+            const confirmPassword = confirmPasswordField.value;
+            
+            if (password && confirmPassword) {
+                if (password === confirmPassword) {
+                    confirmPasswordField.classList.remove('error');
+                    confirmPasswordField.classList.add('success');
+                    return true;
+                } else {
+                    confirmPasswordField.classList.remove('success');
+                    confirmPasswordField.classList.add('error');
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Add event listeners
+        confirmPasswordField.addEventListener('input', validatePasswords);
+        passwordField.addEventListener('input', validatePasswords);
+
+        // Form submission with loading state
+        form.addEventListener('submit', function(e) {
+            if (!validatePasswords() && passwordField.value && confirmPasswordField.value) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Add loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        });
+
+        // Input validation feedback
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('error');
+                    this.classList.add('success');
+                } else {
+                    this.classList.remove('success');
+                    this.classList.add('error');
+                }
+            });
+
+            input.addEventListener('input', function() {
+                if (this.classList.contains('error') && this.checkValidity()) {
+                    this.classList.remove('error');
+                    this.classList.add('success');
+                }
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        document.querySelectorAll('.alert').forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 300);
+            }, 5000);
+        });
+
+        // Phone number formatting
+        const phoneInput = document.getElementById('ucontact');
+        phoneInput.addEventListener('input', function(e) {
+            // Remove non-digits
+            let value = e.target.value.replace(/\D/g, '');
+            // Limit to 10 digits
+            if (value.length > 10) {
+                value = value.slice(0, 10);
+            }
+            e.target.value = value;
+        });
+
+        // Pincode formatting
+        const pincodeInput = document.getElementById('upincode');
+        pincodeInput.addEventListener('input', function(e) {
+            // Remove non-digits
+            let value = e.target.value.replace(/\D/g, '');
+            // Limit to 6 digits
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+            }
+            e.target.value = value;
+        });
+
+        // Smooth animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe form groups for animation
+        document.querySelectorAll('.form-group').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
 </html>
