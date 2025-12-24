@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
+# Temporarily removed decouple import to fix import issues
+# from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-z51x(eyl2zxc2i7ih+9(-+b7hs#s=$=26ds4c_c(voozlnba2+')
+SECRET_KEY = 'django-insecure-z51x(eyl2zxc2i7ih+9(-+b7hs#s=$=26ds4c_c(voozlnba2+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']  # Configure this properly in production
 
@@ -141,8 +142,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='dentalmanagement00@gmail.com')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='kkucitcmwrzeoxsj')
+EMAIL_HOST_USER = 'dentalmanagement00@gmail.com'
+EMAIL_HOST_PASSWORD = 'kkucitcmwrzeoxsj'
 
 # Security settings for production
 if not DEBUG:
