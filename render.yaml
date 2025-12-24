@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: dental-management
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn dentalmanagement.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: EMAIL_HOST_USER
+        value: dentalmanagement00@gmail.com
+      - key: EMAIL_HOST_PASSWORD
+        value: kkucitcmwrzeoxsj
+
+databases:
+  - name: dental-management-db
+    databaseName: dentalmanagement
+    user: dentaluser
