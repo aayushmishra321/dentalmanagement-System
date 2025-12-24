@@ -1,157 +1,247 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>User Details</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Profile - DENTIST</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <link rel="stylesheet" href="/static/cssfiles/aboutusstyle.css">
         <link rel="stylesheet" href="/static/cssfiles/userdetailsstyle.css">
-        
     </head>
     
     <body>
-        <!-- header -->
-        <header>
-
-            <div class="navbar" >
-
-                <div class="pro_title border">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <a href="{% url 'userhp' email %}" class="pro_title">
                     <i class="fa-solid fa-tooth"></i>
                     DENTIST
-                </div>
+                </a>
 
-                
-                <div class="user-part">
-                    <div class="contact-us border">
-                        <a href="{% url 'contact' %}">Contact Us</a>
-    
-                    </div>
-                    <div class="about-us border">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-item">
+                        <a href="{% url 'userhp' email %}">Home</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{% url 'about' %}">About Us</a>
-    
-                    </div>
-    
-                    <div class="user">
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'contact' %}">Contact Us</a>
+                    </li>
+                </ul>
+
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuToggle">
                         <i class="fa-solid fa-user"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="{% url 'userdetail' email %}" class="active"><i class="fa-solid fa-user-circle"></i> Profile</a>
+                        <a href="{% url 'applist' email %}"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
+                        <a href="{% url 'history' email %}"><i class="fa-solid fa-history"></i> History</a>
+                        <a href="{% url 'userlogout' %}"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
             </div>
-                
+        </nav> 
+        <!-- Profile Section -->
+        <section class="profile-section">
+            <div class="container">
+                <div class="profile-wrapper">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="profile-title">
+                            <h1 class="profile-name">{{ userdetail.name }}</h1>
+                            <p class="profile-subtitle">Patient Profile</p>
+                        </div>
+                    </div>
 
-        </header>
-        <!-- toggle menu -->
-        <input type="checkbox" id="opensidebar">
-        <label for="opensidebar" class="sidebarIconToggle"></label>
-        <div id="sidebarmenu">
-            <ul class="menu">
-                <li><a href="{% url 'userdetail' email %}">Details</a></li>
-                <li><a href="{% url 'applist' email %}">Appointments</a></li>
-                <li><a href="{% url 'history' email%}">History</a></li>
-                <li><a href="{%url 'userlogout'%}">Log Out</a></li>
-            </ul>
-        </div> 
-         
-        <!-- user details -->
-       
-        <form class="detail-form" id="detail-user">
-            <div class="detail-title">
-                <h1>User Details</h1>
+                    <!-- Profile Content -->
+                    <div class="profile-content">
+                        <div class="profile-card scale-in">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fa-solid fa-id-card"></i>
+                                    Personal Information
+                                </h2>
+                            </div>
+                            
+                            <div class="profile-details">
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fa-solid fa-user"></i>
+                                            Full Name
+                                        </div>
+                                        <div class="detail-value">{{ userdetail.name }}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fa-solid fa-calendar-days"></i>
+                                            Date of Birth
+                                        </div>
+                                        <div class="detail-value">{{ userdetail.dateofbirth }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fa-solid fa-venus-mars"></i>
+                                            Gender
+                                        </div>
+                                        <div class="detail-value">{{ userdetail.gender }}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fa-solid fa-phone"></i>
+                                            Contact Number
+                                        </div>
+                                        <div class="detail-value">{{ userdetail.contact }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fa-solid fa-envelope"></i>
+                                            Email Address
+                                        </div>
+                                        <div class="detail-value">{{ userdetail.email }}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-item full-width">
+                                        <div class="detail-label">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            Address
+                                        </div>
+                                        <div class="detail-value address">
+                                            {{ userdetail.address }}<br>
+                                            PIN: {{ userdetail.pincode }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="profile-actions">
+                                <a href="{% url 'applist' email %}" class="action-btn primary">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                    View Appointments
+                                </a>
+                                <a href="{% url 'history' email %}" class="action-btn secondary">
+                                    <i class="fa-solid fa-history"></i>
+                                    Medical History
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="details">
-                <div class="name">
-                    <p>Name:</p>
-                    <p class="input-one">
-                        {{userdetail.name}}
-                    </p>
-                </div>
-                <div class="row1">
-                    <div class="name">
-                        <p>Date of Birth:</p>
-                        <p class="input-one">
-                            {{userdetail.dateofbirth}}
-                        </p>
+        </section>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Get to know Us</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'userhp' email %}">Home</a></li>
+                            <li><a href="{% url 'about' %}">About Us</a></li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        </ul>
                     </div>
-                    <div class="name">
-                        <p>Gender:</p>
-                        
-                        <p class="input-one">
-                            {{userdetail.gender}}
-                        </p>
-                        
-                    </div>
-                </div>
-                <div class="row1">
-                    <div class="name">
-                        <p>Contact:</p>
-                        <p class="input-one">
-                            {{userdetail.contact}}
-                        </p>
-                    </div>
-                    <div class="name">
-                        <p>Email:</p>
-                        <p class="input-one">
-                            {{userdetail.email}}
-                        </p>
-        
-                    </div>
-                </div>
-                <div class="name">
-                    <p>Address:</p>
-                    <p class="input-two">
-                        {{userdetail.address}}
-                        {{userdetail.pincode}}
-                    </p>
-                </div>
-            </div>
-            {% comment %} <div class="button">
-                <button>Edit</button>
-                <button>Save</button>
-            </div> {% endcomment %}
-        </form>
-        
-        <!-- footer -->
-        <footer>
-            <div class="panel1 ">
-                <ul class="ul1">
-                    <p>Get to know Us</p>
-                    <a href="{% url 'userhp' email %}">Home</a>
-                    <a href="{% url 'about' %}">About Us</a>
-                    <a href="{% url 'contact' %}">Contact Us</a>
                     
-                </ul>
-                <ul class="ul1">
-                    <p>For Patients</p>
-                    <a href="{% url 'userhp' email %}">Find Doctors</a>
-                    <a href="{% url 'userhp' email %}">Book appointment</a>
-                </ul>
-
-                <ul>
-                    <p>Social</p>
-                    <div class="social">
-                        <i class="fa-brands fa-x-twitter"></i>
-                        <a href="#">Twitter</a>
+                    <div class="footer-section">
+                        <h3>For Patients</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'appointment' email %}">Find Doctors</a></li>
+                            <li><a href="{% url 'appointment' email %}">Book appointment</a></li>
+                        </ul>
                     </div>
-                    <div class="social">
-                        <i class="fa-brands fa-facebook"></i>
-                        <a href="#">Facebook</a>
-                    </div>
-                    <div class="social">
-                        <i class="fa-brands fa-instagram"></i>
-                        <a href="#">Instagram</a>
-                    </div>
-                </ul>
 
-
-            </div>
-            <div class="panel2">
-                <div class="pro_title border">
-                    <i class="fa-solid fa-tooth"></i>
-                    DENTIST
+                    <div class="footer-section">
+                        <h3>Social</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-x-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span>Instagram</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="panel3">
-                <p>DENTIST © 2024, All Rights Reserved </p>
+                <div class="footer-bottom">
+                    <div class="footer-logo">
+                        <i class="fa-solid fa-tooth"></i>
+                        DENTIST
+                    </div>
+                    <p>DENTIST © 2024, All Rights Reserved</p>
+                </div>
             </div>
         </footer>
+
+        <!-- JavaScript -->
+        <script>
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const navLinks = document.getElementById('navLinks');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // User menu toggle
+            const userMenuToggle = document.getElementById('userMenuToggle');
+            const userDropdown = document.getElementById('userDropdown');
+
+            userMenuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
+            });
+
+            // Close user dropdown when clicking outside
+            document.addEventListener('click', function() {
+                userDropdown.classList.remove('active');
+            });
+
+            // Prevent dropdown from closing when clicking inside
+            userDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Add animation classes on load
+            window.addEventListener('load', function() {
+                document.querySelector('.profile-card').classList.add('scale-in');
+            });
+        </script>
     </body>
 </html>
