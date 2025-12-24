@@ -1,68 +1,210 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>forget password</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reset Password - DENTIST</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        
         <link rel="stylesheet" href="/static/cssfiles/otpstyle.css">
     </head>
 
     <body>
+        <!-- Alert Messages -->
         {% if messages %}
-        {%for message in messages%}
-        <div class="alert" >
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-            <strong>{{ message}}</strong> 
+        <div class="alerts-container">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} fade-in">
+                <span class="alert-message">{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+            {% endfor %}
         </div>
-        
-        {% endfor%}
-        {%endif%}
-       <div class="otp">
-            <div class="otp1">
-                <form action="{%url 'otp'%}" class="e-otp" method="post">
-                {% csrf_token %}
-                    <input type="hidden" name="form_type" value="useremail">
-                    <label for="emailid">Email id:</label>
-                    <input type="email" id="emailid" name="emailid" placeholder="Enter your registered email id" class="e-input">
-                    <input type="submit" value="Get OTP" class="so"  >
-                    
-                    
-                </form>
-            </div>
-            <div  class="otp-change-user">
-                        
-                <form action="{% url 'otp' %}" method="post">
-                {% csrf_token %}
-                    <input type="hidden" name="form_type" value="changepassword">
-                    <div class="change-p">
-                        <div class="enter-otp">
-                            <p>OTP: <input type="text" id="enterotp" name="enterotp" placeholder="Enter OTP"></p>
-                            
-                        </div>
-                        
-                        <div class="enter-otp">
-                            <p>Enter password:</p>
-                            <input type="password" id="newpassword" name="newpassword" placeholder="Enter new password" class="input-one">
-                        </div>
-                        <div class="enter-otp">
-                            <label>
-                                <p>Confirm password:</p>
-                                
-                            </label>
-                            <input type="password" id="cnewpassword" name="cnewpassword" placeholder="Confirm password" class="input-one">
-                        </div>
-                        
-                        <div class="c-book">
-                            
-                            <input type="submit" value="Submit" class="button"  >
+        {% endif %}
 
-                        </div>
-                        
+        <!-- Main Content -->
+        <div class="otp-container">
+            <div class="otp-wrapper">
+                <!-- Header -->
+                <div class="otp-header">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-key"></i>
                     </div>
-                </form>
-            </div>
-            
-       </div>
+                    <h1 class="otp-title">Reset Your Password</h1>
+                    <p class="otp-subtitle">Enter your email to receive an OTP, then create a new password</p>
+                </div>
 
+                <!-- Email Form -->
+                <div class="email-section">
+                    <div class="section-card fade-in">
+                        <div class="card-header">
+                            <h2 class="section-title">
+                                <i class="fa-solid fa-envelope"></i>
+                                Get OTP
+                            </h2>
+                        </div>
+                        
+                        <form action="{% url 'otp' %}" method="post" class="email-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="useremail">
+                            
+                            <div class="form-group">
+                                <label for="emailid" class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <div class="input-icon">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                    <input type="email" id="emailid" name="emailid" class="form-input" placeholder="Enter your registered email" required>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="otp-btn">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                Send OTP
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Password Reset Form -->
+                <div class="password-section">
+                    <div class="section-card slide-up">
+                        <div class="card-header">
+                            <h2 class="section-title">
+                                <i class="fa-solid fa-lock"></i>
+                                Reset Password
+                            </h2>
+                        </div>
+                        
+                        <form action="{% url 'otp' %}" method="post" class="password-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="changepassword">
+                            
+                            <div class="form-group">
+                                <label for="enterotp" class="form-label">OTP Code</label>
+                                <div class="input-group">
+                                    <div class="input-icon">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </div>
+                                    <input type="text" id="enterotp" name="enterotp" class="form-input otp-input" placeholder="Enter 6-digit OTP" maxlength="6" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newpassword" class="form-label">New Password</label>
+                                <div class="input-group">
+                                    <div class="input-icon">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </div>
+                                    <input type="password" id="newpassword" name="newpassword" class="form-input" placeholder="Enter new password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('newpassword')">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cnewpassword" class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <div class="input-icon">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </div>
+                                    <input type="password" id="cnewpassword" name="cnewpassword" class="form-input" placeholder="Confirm new password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('cnewpassword')">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">
+                                <i class="fa-solid fa-check"></i>
+                                Reset Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript -->
+        <script>
+            // Password toggle functionality
+            function togglePassword(inputId) {
+                const input = document.getElementById(inputId);
+                const toggle = input.parentElement.querySelector('.password-toggle i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    toggle.classList.remove('fa-eye');
+                    toggle.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    toggle.classList.remove('fa-eye-slash');
+                    toggle.classList.add('fa-eye');
+                }
+            }
+
+            // OTP input formatting
+            const otpInput = document.getElementById('enterotp');
+            otpInput.addEventListener('input', function(e) {
+                // Remove any non-numeric characters
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Add spacing for better readability
+                if (this.value.length > 3) {
+                    this.value = this.value.substring(0, 3) + ' ' + this.value.substring(3, 6);
+                }
+            });
+
+            // Form validation
+            const passwordForm = document.querySelector('.password-form');
+            passwordForm.addEventListener('submit', function(e) {
+                const newPassword = document.getElementById('newpassword').value;
+                const confirmPassword = document.getElementById('cnewpassword').value;
+                
+                if (newPassword !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match. Please try again.');
+                    return false;
+                }
+                
+                if (newPassword.length < 6) {
+                    e.preventDefault();
+                    alert('Password must be at least 6 characters long.');
+                    return false;
+                }
+            });
+
+            // Form submission enhancement
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+                        submitBtn.disabled = true;
+                    }
+                });
+            });
+
+            // Auto-hide alerts after 5 seconds
+            document.querySelectorAll('.alert').forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+
+            // Add animation classes on load
+            window.addEventListener('load', function() {
+                document.querySelectorAll('.section-card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate');
+                    }, index * 200);
+                });
+            });
+        </script>
     </body>
 </html>
