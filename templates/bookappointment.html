@@ -1,71 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Book appointment Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Book Appointment - DENTIST</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        
         <link rel="stylesheet" href="/static/cssfiles/bookappointmentstyle.css">
     </head>
     
- <body>
-    {% if messages %}
-        {%for message in messages%}
-        <div class="alert" >
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-            <strong>{{ message}}</strong> 
+    <body>
+        <!-- Alert Messages -->
+        {% if messages %}
+        <div class="alerts-container">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} fade-in">
+                <span class="alert-message">{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+            {% endfor %}
         </div>
-        
-        {% endfor%}
-        {%endif%}
-    <div  class="set-schedule">
-        
-        <div class="appointment-detail">
+        {% endif %}
 
-           <form method="post" action="{% url 'bookappointment' demail %}">
-            {% csrf_token %}
-                
-                <div class="date">
-                    <label for="ad"></label>
-                    <p>Select Date: <input type="date"  id="ad" name="ad" class="adate"> </p>
-                    
-                </div>
-                <div class="date">
-                    <p>
-                        <label for="select_time">Select Time:</label>
-                    </p>
-                    <div class="select-time">
-                        
-                        <p class="time"><input type="radio" id="select_time" name="select_time" value="10:00 Am" >10:00 Am</p>
-                       
-                        <p class="time"> <input type="radio" id="select_time" name="select_time" value="11:00 Am" >11:00 Am</p>
-                   
-                        <p class="time"> <input type="radio" id="select_time" name="select_time" value="12:00 Pm" >12:00 Pm</p>
-                   
-                        <p class="time"> <input type="radio" id="select_time" name="select_time" value="01:00 Pm" >1:00 Pm</p>
-                   
-                        <p class="time"><input type="radio" id="select_time" name="select_time" value="02:00 Pm" >2:00 Pm</p>
-                   
-                        <p class="time" > <input type="radio" id="select_time" name="select_time" value="03:00 Pm" > 3:00 Pm</p>
-                   
-                        <p class="time"> <input type="radio" id="select_time" name="select_time" value="04:00 Pm" > 4:00 Pm</p>
+        <!-- Main Content -->
+        <div class="appointment-container">
+            <div class="appointment-wrapper">
+                <div class="appointment-header">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-calendar-plus"></i>
                     </div>
+                    <h1 class="appointment-title">Book Your Appointment</h1>
+                    <p class="appointment-subtitle">Select your preferred date and time</p>
                 </div>
-                <div class="payment-method ">
-                    <p><label for="select_payment"></label>Payment:</p>
-                    <div>
-                        <p><input type="radio" id="select_payment" name="select_payment" value="Online Payment"> Online Payment</p>
-                        <p><input type="radio" id="select_payment" name="select_payment" value="Ofline Payment"> Ofline Payment</p>
-                    </div>
-                </div>
-                <div class="c-book">
-                    <input type="submit" value="Book" class="btn" >
-                    
 
-                </div>
-               
-           </form>
+                <form method="post" action="{% url 'bookappointment' demail %}" class="appointment-form">
+                    {% csrf_token %}
+                    
+                    <!-- Date Selection -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <h3>Select Date</h3>
+                        </div>
+                        <div class="date-input-group">
+                            <input type="date" id="ad" name="ad" class="date-input" required>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Selection -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fa-solid fa-clock"></i>
+                            <h3>Select Time</h3>
+                        </div>
+                        <div class="time-slots">
+                            <div class="time-slot">
+                                <input type="radio" id="time_10am" name="select_time" value="10:00 Am" required>
+                                <label for="time_10am" class="time-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    10:00 AM
+                                </label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" id="time_11am" name="select_time" value="11:00 Am">
+                                <label for="time_11am" class="time-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    11:00 AM
+                                </label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" id="time_12pm" name="select_time" value="12:00 Pm">
+                                <label for="time_12pm" class="time-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    12:00 PM
+                                </label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" id="time_1pm" name="select_time" value="01:00 Pm">
+                                <label for="time_1pm" class="time-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    1:00 PM
+                                </label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" id="time_2pm" name="select_time" value="02:00 Pm">
+                                <label for="time_2pm" class="time-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    2:00 PM
+                                </label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" id="time_3pm" name="select_time" value="03:00 Pm">
+                                <label for="time_3pm" class="time-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    3:00 PM
+                                </label>
+                            </div>
+                            <div class="time-slot">
+                                <input type="radio" id="time_4pm" name="select_time" value="04:00 Pm">
+                                <label for="time_4pm" class="time-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    4:00 PM
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fa-solid fa-credit-card"></i>
+                            <h3>Payment Method</h3>
+                        </div>
+                        <div class="payment-options">
+                            <div class="payment-option">
+                                <input type="radio" id="online_payment" name="select_payment" value="Online Payment" required>
+                                <label for="online_payment" class="payment-label">
+                                    <i class="fa-solid fa-globe"></i>
+                                    <span>Online Payment</span>
+                                    <small>Pay securely online</small>
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="offline_payment" name="select_payment" value="Offline Payment">
+                                <label for="offline_payment" class="payment-label">
+                                    <i class="fa-solid fa-money-bill"></i>
+                                    <span>Offline Payment</span>
+                                    <small>Pay at clinic</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="book-btn">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            Book Appointment
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-        
-  </body>
+
+        <!-- JavaScript -->
+        <script>
+            // Set minimum date to today
+            const dateInput = document.getElementById('ad');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+
+            // Form submission enhancement
+            const form = document.querySelector('.appointment-form');
+            form.addEventListener('submit', function(e) {
+                const submitBtn = form.querySelector('.book-btn');
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Booking...';
+                submitBtn.disabled = true;
+            });
+
+            // Auto-hide alerts after 5 seconds
+            document.querySelectorAll('.alert').forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+
+            // Add animation classes on load
+            window.addEventListener('load', function() {
+                document.querySelector('.appointment-wrapper').classList.add('scale-in');
+            });
+        </script>
+    </body>
 </html>

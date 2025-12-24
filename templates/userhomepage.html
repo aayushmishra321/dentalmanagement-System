@@ -1,163 +1,279 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>User Home Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome - DENTIST</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <link rel="stylesheet" href="/static/cssfiles/userhomepstyle.css">
-        
     </head>
     
     <body>
-        <!-- header -->
-        <header>
-
-            <div class="navbar" id="home-page">
-
-                <div class="pro_title border">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <a href="{% url 'userhp' email %}" class="pro_title">
                     <i class="fa-solid fa-tooth"></i>
                     DENTIST
-                </div>
+                </a>
 
-                <div class="nav-search ">
-                    {% comment %} <input placeholder="Search Dentist" class="search-input" id="search-dentist">
-                    <div class="search-icon">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <!-- <button>
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button> -->
-                    </div> {% endcomment %}
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-                </div>
-                <div class="contact-us border">
-                    <a href="{% url 'contact' %}">Contact Us</a>
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-item">
+                        <a href="{% url 'userhp' email %}" class="active">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'about' %}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'contact' %}">Contact Us</a>
+                    </li>
+                </ul>
 
-                </div>
-                <div class="about-us border">
-                    <a href="{% url 'about' %}">About Us</a>
-
-                </div>
-
-                <div class="user">
-                    <i class="fa-solid fa-user"></i>
+                <div class="user-menu">
+                    <button class="user-btn" id="userMenuToggle">
+                        <i class="fa-solid fa-user"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="{% url 'userdetail' email %}"><i class="fa-solid fa-user-circle"></i> Profile</a>
+                        <a href="{% url 'applist' email %}"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
+                        <a href="{% url 'history' email %}"><i class="fa-solid fa-history"></i> History</a>
+                        <a href="{% url 'userlogout' %}"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+                    </div>
                 </div>
             </div>
-                
+        </nav>
 
-        </header>
-        
-        <!-- toggle menu -->
-        <input type="checkbox" id="openSidebarMenu">
-        <label for="openSidebarMenu" class="sidebarIconToggle">
-            
-        </label>
-        <div id="sidebarMenu">
-            <ul class="menu">
-                <li><a href="{% url 'userdetail' email %}">Details</a></li>
-                <li><a href="{% url 'applist' email %}">Appointments</a></li>
-                <li><a href="{% url 'history' email%}">History</a></li>
-                <li><a href="{%url 'userlogout'%}">Log Out</a></li>
-            
-            </ul>
-            
-        </div>
+        <!-- Alert Messages -->
         {% if messages %}
-        {%for message in messages%}
-        <div class="alert" >
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-            <strong>{{ message}}</strong> 
+        <div class="alerts-container">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} fade-in">
+                <span class="alert-message">{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+            {% endfor %}
         </div>
-        
-        {% endfor%}
-        {%endif%}
-        <!-- hero section -->
-        <div class="hero-section">
-            <div class="hero-msgone">
-                <p class="mone">SMILE</p>
-                <p>WITHOUT</p>
-                <p>HESITATION</p>
-            </div>
-            <div class="hero-msgtwo">
-                <p>
-                    We protect your smile and makes your perfect smile even better.
-                </p>
-            </div>
-        </div>
-        <!-- Appointment Section -->
-        <div class="appointment-section" id="book-appointment">
-            <div class="normal-appointment box">
-                <div class="box-content">
-                    <h3>Regular</h3>
-                    <div class="msgthree">
-                        <p>Regular dental check-ups provide a range of benefits that safeguard oral health. They facilitate the prevention and early detection of dental problems, allowing timely intervention to prevent them from escalating into more severe conditions.Regular preventive dental checkups are key to maintaining both your oral health and your overall health. Checkups not only help prevent tooth decay, gum disease and oral cancer, but they help you avoid the pain and costs that dental problems can bring with them.</p>
-                    </div>
-
-                    <div class="make-appointment">
-                       <p> <a  class="a1 " href="{% url 'appointment' email%}">Make an Appointment</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="emergency-appointment box">
-                <div class="box-content">
-                    <h3 class="emer">Emergency!</h3>
-                    <div class="msgthree">
-                        <p>If you have a toothache that lasts more than 1-2 days and is causing you a lot of pain or discomfort, you're having a dental emergency. This usually indicates an advanced cavity or an infected tooth. Without proper care, your condition will only get worse.</p>
-                        <br>
-                        <p class="emer1">
-                            Note:- For emergency make an appointment which help you to get fast appointment with best dentist within 1 hour for checkup.
+        {% endif %}
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <div class="hero-title fade-in">
+                            <span class="highlight">SMILE</span>
+                            <span>WITHOUT</span>
+                            <span>HESITATION</span>
+                        </div>
+                        <p class="hero-description slide-up">
+                            We protect your smile and make your perfect smile even better.
                         </p>
                     </div>
+                </div>
+            </div>
+        </section>
 
-                    <div class="make-appointment">
-                       <p> <a  class="a1 " href="{% url 'emergencyappointment' email%}">Make an Appointment</a></p>
+        <!-- Appointment Section -->
+        <section class="appointment-section" id="book-appointment">
+            <div class="container">
+                <div class="appointment-header text-center">
+                    <h2 class="section-title">Choose Your Appointment Type</h2>
+                    <p class="section-subtitle">Select the type of dental care you need</p>
+                </div>
+                
+                <div class="appointment-types">
+                    <div class="appointment-card regular-appointment bounce-in">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <h3 class="card-title">Regular Checkup</h3>
+                        </div>
+                        
+                        <div class="card-content">
+                            <p class="card-description">
+                                Regular dental check-ups provide a range of benefits that safeguard oral health. They facilitate the prevention and early detection of dental problems, allowing timely intervention to prevent them from escalating into more severe conditions. Regular preventive dental checkups are key to maintaining both your oral health and your overall health.
+                            </p>
+                        </div>
+                        
+                        <div class="card-actions">
+                            <a href="{% url 'appointment' email %}" class="appointment-btn">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                                Make an Appointment
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="appointment-card emergency-appointment bounce-in">
+                        <div class="card-header emergency">
+                            <div class="card-icon emergency">
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                            </div>
+                            <h3 class="card-title emergency">Emergency!</h3>
+                        </div>
+                        
+                        <div class="card-content">
+                            <p class="card-description">
+                                If you have a toothache that lasts more than 1-2 days and is causing you a lot of pain or discomfort, you're having a dental emergency. This usually indicates an advanced cavity or an infected tooth. Without proper care, your condition will only get worse.
+                            </p>
+                            <div class="emergency-note">
+                                <i class="fa-solid fa-info-circle"></i>
+                                <p><strong>Note:</strong> For emergency appointments, we help you get fast appointments with the best dentist within 1 hour for checkup.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card-actions">
+                            <a href="{% url 'emergencyappointment' email %}" class="appointment-btn emergency">
+                                <i class="fa-solid fa-bolt"></i>
+                                Emergency Appointment
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- footer -->
-        <footer>
-            <div class="panel1 ">
-                <ul class="ul1">
-                    <p>Get to know Us</p>
-                    <a href="{% url 'userhp' email %}">Home</a>
-                    <a href="{% url 'about' %}">About Us</a>
-                    <a href="{% url 'contact' %}">Contact Us</a>
+        </section>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Get to know Us</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'userhp' email %}">Home</a></li>
+                            <li><a href="{% url 'about' %}">About Us</a></li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        </ul>
+                    </div>
                     
-                    
-                </ul>
-                <ul class="ul1">
-                    <p>For Patients</p>
-                    <a href="#search-dentist">Find Doctors</a>
-                    <a href="#book-appointment">Book appointment</a>
-                </ul>
-
-                <ul>
-                    <p>Social</p>
-                    <div class="social">
-                        <i class="fa-brands fa-x-twitter"></i>
-                        <a href="#">Twitter</a>
+                    <div class="footer-section">
+                        <h3>For Patients</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'appointment' email %}">Find Doctors</a></li>
+                            <li><a href="#book-appointment">Book appointment</a></li>
+                        </ul>
                     </div>
-                    <div class="social">
-                        <i class="fa-brands fa-facebook"></i>
-                        <a href="#">Facebook</a>
-                    </div>
-                    <div class="social">
-                        <i class="fa-brands fa-instagram"></i>
-                        <a href="#">Instagram</a>
-                    </div>
-                </ul>
 
-
-            </div>
-            <div class="panel2">
-                <div class="pro_title border">
-                    <i class="fa-solid fa-tooth"></i>
-                    DENTIST
+                    <div class="footer-section">
+                        <h3>Social</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-x-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-instagram"></i>
+                                <span>Instagram</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="panel3">
-                <p>DENTIST © 2024, All Rights Reserved </p>
+                <div class="footer-bottom">
+                    <div class="footer-logo">
+                        <i class="fa-solid fa-tooth"></i>
+                        DENTIST
+                    </div>
+                    <p>DENTIST © 2024, All Rights Reserved</p>
+                </div>
             </div>
         </footer>
+
+        <!-- JavaScript -->
+        <script>
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const navLinks = document.getElementById('navLinks');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // User menu toggle
+            const userMenuToggle = document.getElementById('userMenuToggle');
+            const userDropdown = document.getElementById('userDropdown');
+
+            userMenuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
+            });
+
+            // Close user dropdown when clicking outside
+            document.addEventListener('click', function() {
+                userDropdown.classList.remove('active');
+            });
+
+            // Prevent dropdown from closing when clicking inside
+            userDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Animation on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.appointment-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+
+            // Auto-hide alerts after 5 seconds
+            document.querySelectorAll('.alert').forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+        </script>
     </body>
 </html>
