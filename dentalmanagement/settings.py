@@ -12,21 +12,24 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-# Temporarily removed decouple import to fix import issues
-# from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Helper function to get environment variables
+def get_env_variable(var_name, default=None):
+    """Get environment variable or return default"""
+    return os.environ.get(var_name, default)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z51x(eyl2zxc2i7ih+9(-+b7hs#s=$=26ds4c_c(voozlnba2+'
+SECRET_KEY = get_env_variable('SECRET_KEY', 'django-insecure-z51x(eyl2zxc2i7ih+9(-+b7hs#s=$=26ds4c_c(voozlnba2+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = get_env_variable('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = ['*']  # Configure this properly in production
 
@@ -78,13 +81,22 @@ WSGI_APPLICATION = 'dentalmanagement.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Using SQLite3 for deployment
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Use PostgreSQL in production (Render) or SQLite in development
+DATABASE_URL = get_env_variable('DATABASE_URL')
+
+if DATABASE_URL:
+    # Production database (PostgreSQL on Render)
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
     }
-}
+else:
+    # Development database (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -142,8 +154,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'dentalmanagement00@gmail.com'
-EMAIL_HOST_PASSWORD = 'kkucitcmwrzeoxsj'
+EMAIL_HOST_USER = get_env_variable('EMAIL_HOST_USER', 'dentalmanagement00@gmail.com')
+EMAIL_HOST_PASSWORD = get_env_variable('EMAIL_HOST_PASSWORD', 'kkucitcmwrzeoxsj')
 
 # Security settings for production
 if not DEBUG:
@@ -155,3 +167,14 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    
+    # Additional security settings for production
+    CSRF_TRUSTED_ORIGINS = [
+        'https://*.onrender.com',
+        'https://dental-management.onrender.com',
+    ]
+    
+    # Session settings
+    SESSION_COOKIE_AGE = 86400  # 24 hours
+    SESSION_SAVE_EVERY_REQUEST = True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = False

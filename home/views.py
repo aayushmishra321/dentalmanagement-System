@@ -12,56 +12,64 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.core.mail import send_mail
 import random
-
-
-
-check_login=False
-check_doclogin=False
-useremail=""
-doctoremail=""
-uotp=""
-ue=""
 # --------------------------------Create your views here.-------------------------------------------------------------
 # ----------------------------main homepage------------------------------
 def homepage(request):
-    if check_login==True:
-        return redirect('userhp',useremail)
-    return render(request,"index.html",{'check':check_login})
+    # Check if user is logged in via session
+    if request.session.get('user_logged_in') and request.session.get('user_email'):
+        return redirect('userhp', request.session.get('user_email'))
+    
+    return render(request, "index.html", {
+        'check': request.session.get('user_logged_in', False)
+    })
 
 
 # ---------------------------contact page-----------------------------------
 def contactus(request):
-    
-   
     if request.method == 'POST':
         name = request.POST.get('username')
         email = request.POST.get('useremail')
         contact = request.POST.get('usercontact')
         message = request.POST.get('usermessage')
         
-        if name == "" or email == "" or contact == "" or message == "":
-            messages.warning(request,"Fill all details !")
+        if not all([name, email, contact, message]):
+            messages.warning(request, "Fill all details!")
             return redirect('contact')
-        user_contact = UserContacts(name=name, email=email, contact=contact, message=message,date=datetime.today())
-        user_contact.save()
-        messages.success(request,"Message sent successfully")
+            
+        try:
+            user_contact = UserContacts(
+                name=name, 
+                email=email, 
+                contact=contact, 
+                message=message, 
+                date=datetime.today()
+            )
+            user_contact.save()
+            messages.success(request, "Message sent successfully")
+        except Exception as e:
+            messages.error(request, f"Failed to send message: {str(e)}")
         
         return redirect("contact")
 
-    
-
-    return render(request,"contactus.html",{'check':check_login,'uemail':useremail})
+    return render(request, "contactus.html", {
+        'check': request.session.get('user_logged_in', False),
+        'uemail': request.session.get('user_email', '')
+    })
 
 
 # -----------------------------------about page------------------------------------------
 def about(request):
-    return render(request,"aboutus.html",{'check':check_login,'uemail':useremail})
+    return render(request, "aboutus.html", {
+        'check': request.session.get('user_logged_in', False),
+        'uemail': request.session.get('user_email', '')
+    })
 
 
 # ------------------------------------doctor page----------------------------------------
 def fordoctor(request):
-    if check_login==True:
-        return redirect('userhp',useremail)
+    # Check if user is already logged in
+    if request.session.get('user_logged_in') and request.session.get('user_email'):
+        return redirect('userhp', request.session.get('user_email'))
    
     if request.method == 'POST':
         if request.POST.get("form_type") == "contactOne":
@@ -70,87 +78,103 @@ def fordoctor(request):
             contact = request.POST.get('doctorcontact')
             message = request.POST.get('doctormessage')
             
-            if name == "" or email == "" or contact == "" or message == "":
-                messages.warning(request,"Fill all details !")
+            if not all([name, email, contact, message]):
+                messages.warning(request, "Fill all details!")
                 return redirect('fordoctor')
-            user_contact = DoctorsMessage(name=name, email=email, contact=contact, message=message,date=datetime.today())
-            user_contact.save()
-            messages.success(request,"Message sent successfully")
+                
+            try:
+                user_contact = DoctorsMessage(
+                    name=name, 
+                    email=email, 
+                    contact=contact, 
+                    message=message, 
+                    date=datetime.today()
+                )
+                user_contact.save()
+                messages.success(request, "Message sent successfully")
+            except Exception as e:
+                messages.error(request, f"Failed to send message: {str(e)}")
             
             return redirect("fordoctor")
         elif request.POST.get("form_type") == "loginOne":
-            demail=request.POST.get('docemail')
-            dpassword=request.POST.get('docpassword')
-            if demail == "" or dpassword == "":
-                messages.warning(request,"Fill all details !")
+            demail = request.POST.get('docemail')
+            dpassword = request.POST.get('docpassword')
+            if not demail or not dpassword:
+                messages.warning(request, "Fill all details!")
                 return redirect('fordoctor')
-            if DoctorDetail.objects.filter(email=demail).exists():
-                docotor=DoctorDetail.objects.get(email=demail)
-                dp=docotor.password
-
-                if dp==dpassword:
-                    global check_doclogin
-                    check_doclogin=True
-
-                    global doctoremail
-                    doctoremail=demail
-                    messages.success(request,"Login successfully")
-                    return redirect("doctors",demail)
+                
+            try:
+                if DoctorDetail.objects.filter(email=demail).exists():
+                    doctor = DoctorDetail.objects.get(email=demail)
+                    
+                    if doctor.password == dpassword:
+                        # Set session variables for doctor login
+                        request.session['doctor_logged_in'] = True
+                        request.session['doctor_email'] = demail
+                        
+                        messages.success(request, "Login successful")
+                        return redirect("doctors", demail)
+                    else:
+                        messages.warning(request, "Password is incorrect!")
+                        return redirect("fordoctor")
                 else:
-                    messages.warning(request,"Password is incorrect !")
+                    messages.warning(request, "Email does not exist!")
                     return redirect("fordoctor")
-            else:
-                messages.warning(request,"Email is not exist!")
+            except Exception as e:
+                messages.error(request, f"Login failed: {str(e)}")
                 return redirect("fordoctor")
 
-    return render(request,"doctorpage.html",{'check':check_login})
+    return render(request, "doctorpage.html", {
+        'check': request.session.get('user_logged_in', False)
+    })
 
 
 
 # -----------------------------------login-------------------------------------------
 def login(request):
-    global check_login
-    global useremail
-                    
-    if check_login==True:
-        return redirect('userhp',useremail)
+    # Check if user is already logged in via session
+    if request.session.get('user_logged_in') and request.session.get('user_email'):
+        return redirect('userhp', request.session.get('user_email'))
     
     if request.method == 'POST':
-        email=request.POST.get('email')
-        password=request.POST.get('password')
-        cyah=request.POST.get('cyah')
-        if email == "" or password == "":
-                messages.warning(request,"Fill all details !")
-                return redirect('login')
-        if UserDetail.objects.filter(email=email).exists():
-            user=UserDetail.objects.get(email=email)
-            up=user.password
-
-            if up==password:
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        if not email or not password:
+            messages.warning(request, "Fill all details!")
+            return redirect('login')
+            
+        try:
+            if UserDetail.objects.filter(email=email).exists():
+                user = UserDetail.objects.get(email=email)
                 
-                check_login=True
-                
-                useremail=email
-                messages.success(request,"Login successfully")
-                return redirect("userhp",email)
+                if user.password == password:
+                    # Set session variables instead of global variables
+                    request.session['user_logged_in'] = True
+                    request.session['user_email'] = email
+                    
+                    messages.success(request, "Login successful")
+                    return redirect("userhp", email)
+                else:
+                    messages.warning(request, "Password incorrect!")
+                    return redirect("login")
             else:
-                messages.warning(request,"Password incorrect !")
+                messages.warning(request, "Email does not exist!")
                 return redirect("login")
-        else:
-            messages.warning(request,"Email is not exist!")
+                
+        except Exception as e:
+            messages.error(request, f"Login failed: {str(e)}")
             return redirect("login")
 
-
-    return render(request,"login.html")
+    return render(request, "login.html")
 
 
 
 # ----------------------------------------------Registration---------------------------------------
 def register(request):
-    global check_login
-    global useremail               
-    if check_login==True:
-        return redirect('userhp',useremail)
+    # Check if user is already logged in via session
+    if request.session.get('user_logged_in') and request.session.get('user_email'):
+        return redirect('userhp', request.session.get('user_email'))
     
     if request.method == 'POST':
         name = request.POST.get('uname')
@@ -161,41 +185,63 @@ def register(request):
         address = request.POST.get('uaddress')
         pincode = request.POST.get('upincode')
         password = request.POST.get('newpassword')
-        cpassword =request.POST.get('confirmpassword')
-        if name == "" or email == "" or contact == "" or dateofbirth == None or gender == None or address == "" or pincode == "" or password == ""or cpassword == "":
-                messages.warning(request,"Fill all details !")
-                return redirect('register')
+        cpassword = request.POST.get('confirmpassword')
         
-        if password==cpassword:
+        # Validation
+        if not all([name, email, contact, dateofbirth, gender, address, pincode, password, cpassword]):
+            messages.warning(request, "Fill all details!")
+            return redirect('register')
+        
+        if password == cpassword:
             if UserDetail.objects.filter(email=email).exists():
-                messages.warning(request,"Email already exist!")
+                messages.warning(request, "Email already exists!")
                 return redirect("register")
             elif UserDetail.objects.filter(contact=contact).exists():
-                messages.warning(request,"Phone number already exist!")
+                messages.warning(request, "Phone number already exists!")
                 return redirect("register")
             else:
-                user_detail = UserDetail(name=name, email=email, contact=contact, dateofbirth=dateofbirth, gender=gender, address=address, pincode=pincode, password=password)
-                user_detail.save()
-                
-                check_login=True
-                
-                useremail=email
-                
-                send_mail(
-                "Welcome to DENTIST World",
-                f"Hi {name}, thank you for registering in DENTIST. We hope we can give you a beautiful smile. Thank you",
-                "dentalmanagement00@gmail.com",
-                [email],
-                fail_silently=False,
-                )
-                
-                messages.success(request,"Registered successfully")
-                return redirect("userhp",email)
+                try:
+                    # Create user
+                    user_detail = UserDetail(
+                        name=name, 
+                        email=email, 
+                        contact=contact, 
+                        dateofbirth=dateofbirth, 
+                        gender=gender, 
+                        address=address, 
+                        pincode=pincode, 
+                        password=password
+                    )
+                    user_detail.save()
+                    
+                    # Set session variables instead of global variables
+                    request.session['user_logged_in'] = True
+                    request.session['user_email'] = email
+                    
+                    # Send welcome email
+                    try:
+                        send_mail(
+                            "Welcome to DENTIST World",
+                            f"Hi {name}, thank you for registering in DENTIST. We hope we can give you a beautiful smile. Thank you",
+                            "dentalmanagement00@gmail.com",
+                            [email],
+                            fail_silently=True,  # Don't fail if email doesn't send
+                        )
+                    except Exception as e:
+                        # Log email error but don't fail registration
+                        print(f"Email sending failed: {e}")
+                    
+                    messages.success(request, "Registered successfully")
+                    return redirect("userhp", email)
+                    
+                except Exception as e:
+                    messages.error(request, f"Registration failed: {str(e)}")
+                    return redirect("register")
         else:
-            messages.warning(request,"Password not match")
+            messages.warning(request, "Passwords do not match")
             return redirect("register")
    
-    return render(request,"registrationpage.html")
+    return render(request, "registrationpage.html")
 
 
     
@@ -640,12 +686,9 @@ def prescription(request,uemail):
 
 # -------------------------------------------logout---------------------------------------------------
 def userlogout(request):
-    global check_login
-    check_login=False
-    global check_doclogin
-    check_doclogin=False
-    messages.success(request,"Log out successfully")
-    
+    # Clear session data
+    request.session.flush()  # This removes all session data
+    messages.success(request, "Logged out successfully")
     return redirect("home")
 
 # -------------------------------------------user history---------------------------------------------------

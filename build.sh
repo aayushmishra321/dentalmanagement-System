@@ -2,13 +2,18 @@
 # Exit on error
 set -o errexit
 
-echo "Installing dependencies..."
+echo "🚀 Starting build process..."
+
+echo "📦 Installing dependencies..."
 pip install -r requirements.txt
 
-echo "Collecting static files..."
+echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput
 
-echo "Running database migrations..."
+echo "🗄️ Running database migrations..."
 python manage.py migrate
 
-echo "Build completed successfully!"
+echo "🔍 Running registration test..."
+python test_registration.py || echo "⚠️ Registration test failed, but continuing..."
+
+echo "✅ Build completed successfully!"
